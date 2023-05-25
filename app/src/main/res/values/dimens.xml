@@ -2,4 +2,6 @@
 <resources>
     <dimen name="margin_default">4dp</dimen>
     <dimen name="margin_default_2x">8dp</dimen>
+    <dimen name="border_width">2dp</dimen>
+
 </resources>

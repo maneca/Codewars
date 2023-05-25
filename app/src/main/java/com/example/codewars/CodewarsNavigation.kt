@@ -40,15 +40,13 @@ fun CodewarsNavApp() {
         ) { entry ->
             BackHandler(true) {}
             val viewModel = hiltViewModel<ChallengeDetailsViewModel>()
-            entry.arguments?.getString("challengeId")?.let { id ->
-                ChallengeDetailsScreen(
-                    viewModel = viewModel,
-                    returnToMainScreen = {
-                        navController.navigateUp()
-                    },
-                    userId = id
-                )
-            }
+            ChallengeDetailsScreen(
+                viewModel = viewModel,
+                returnToMainScreen = {
+                    navController.navigateUp()
+                }
+            )
+
         }
 
 
