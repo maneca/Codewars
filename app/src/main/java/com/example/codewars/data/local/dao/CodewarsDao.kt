@@ -10,7 +10,7 @@ import com.example.codewars.data.local.entity.CompletedChallengeEntity
 @Dao
 interface CodewarsDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllCompletedChallenges(challenges: List<CompletedChallengeEntity>)
 
     @Query("SELECT * FROM completedChallenges")
@@ -18,7 +18,4 @@ interface CodewarsDao {
 
     @Query("DELETE FROM completedChallenges")
     fun deleteCompletedChallenges()
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addCompletedChallenges(challenges : List<CompletedChallengeEntity>)
 }
