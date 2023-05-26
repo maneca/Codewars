@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.codewars.domain.repository.CodewarsRepository
 import com.example.codewars.presentation.states.ChallengeState
 import com.example.codewars.presentation.states.UiEvent
+import com.example.codewars.utils.ARGUMENT_KEY
 import com.example.codewars.utils.CustomExceptions
 import com.example.codewars.utils.DispatcherProvider
 import com.example.codewars.utils.Resource
@@ -30,10 +31,10 @@ class ChallengeDetailsViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
-    val eventFlow = _eventFlow.asSharedFlow()
+        val eventFlow = _eventFlow.asSharedFlow()
 
     init {
-        val id : String? = savedStateHandle.get<String>("challengeId")?.fromJson()
+        val id : String? = savedStateHandle.get<String>(ARGUMENT_KEY)?.fromJson()
         getChallengeDetails(id)
     }
 

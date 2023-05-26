@@ -13,6 +13,7 @@ import com.example.codewars.presentation.ChallengeDetailsViewModel
 import com.example.codewars.presentation.CodewarsMainViewModel
 import com.example.codewars.ui.screens.ChallengeDetailsScreen
 import com.example.codewars.ui.screens.CodewarsMainScreen
+import com.example.codewars.utils.ARGUMENT_KEY
 
 @Composable
 fun CodewarsNavApp() {
@@ -33,7 +34,7 @@ fun CodewarsNavApp() {
         composable(
             route = Screen.ChallengeScreen.route + "/{challengeId}",
             arguments = listOf(
-                navArgument("challengeId") {
+                navArgument(ARGUMENT_KEY) {
                     type = NavType.StringType
                 }
             )
