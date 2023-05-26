@@ -26,7 +26,7 @@ class CodewarsRepositoryImp(
     @OptIn(ExperimentalPagingApi::class)
     override fun getCompletedChallenges(): Flow<PagingData<CompletedChallenge>> {
         val pagingSourceFactory = {
-            database.codewarsDao.getCompletedChallenges()
+            database.codewarsDao().getCompletedChallenges()
         }
 
         return Pager(
