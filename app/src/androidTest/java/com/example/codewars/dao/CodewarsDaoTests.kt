@@ -1,4 +1,4 @@
-package com.example.codewars
+package com.example.codewars.dao
 
 import androidx.room.Room
 import androidx.test.filters.SmallTest
@@ -65,7 +65,7 @@ class CodewarsDaoTests {
             CodewarsDatabase::class.java)
             .build()
 
-        dao = database.codewarsDao
+        dao = database.codewarsDao()
     }
 
     @After

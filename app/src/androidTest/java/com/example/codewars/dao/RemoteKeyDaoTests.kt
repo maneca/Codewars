@@ -1,4 +1,4 @@
-package com.example.codewars
+package com.example.codewars.dao
 
 import androidx.room.Room
 import androidx.test.filters.SmallTest
@@ -19,10 +19,16 @@ class RemoteKeyDaoTests {
     private lateinit var dao: RemoteKeyDao
 
     companion object{
-        val remoteKeyEntity = RemoteKeyEntity(
-            label = "page",
+        val remoteKeysEntity = listOf(RemoteKeyEntity(
+            label = "56f8fe6a2e6c0dc83b0008a7",
+            prevKey = null,
             nextKey = 1
-        )
+        ),
+            RemoteKeyEntity(
+                label = "56d8ae9237123036d3001b54",
+                prevKey = null,
+                nextKey = 1
+            ))
     }
 
     @Before
@@ -32,7 +38,7 @@ class RemoteKeyDaoTests {
             CodewarsDatabase::class.java)
             .build()
 
-        dao = database.remoteKeyDao
+        dao = database.remoteKeyDao()
     }
 
     @After
@@ -42,27 +48,27 @@ class RemoteKeyDaoTests {
 
     @Test
     fun insertRemoteKey() = runBlocking{
-        var remoteKey = dao.remoteKeyByQuery("page")
+        var remoteKey = dao.remoteKeyByQuery(remoteKeysEntity[0].label)
 
         Assert.assertNull(remoteKey)
 
-        dao.insertOrReplace(remoteKeyEntity)
-        remoteKey = dao.remoteKeyByQuery("page")
-        Truth.assertThat(remoteKey).isEqualTo(remoteKeyEntity)
+        dao.insertOrReplace(remoteKeysEntity)
+        remoteKey = dao.remoteKeyByQuery(remoteKeysEntity[0].label)
+        Truth.assertThat(remoteKey).isEqualTo(remoteKeysEntity[0])
     }
 
     @Test
     fun deleteRemoteKey() = runBlocking{
-        var remoteKey = dao.remoteKeyByQuery("page")
+        var remoteKey = dao.remoteKeyByQuery(remoteKeysEntity[0].label)
 
         Assert.assertNull(remoteKey)
 
-        dao.insertOrReplace(remoteKeyEntity)
-        remoteKey = dao.remoteKeyByQuery("page")
-        Truth.assertThat(remoteKey).isEqualTo(remoteKeyEntity)
+        dao.insertOrReplace(remoteKeysEntity)
+        remoteKey = dao.remoteKeyByQuery(remoteKeysEntity[0].label)
+        Truth.assertThat(remoteKey).isEqualTo(remoteKeysEntity[0])
 
-        dao.deleteByQuery("page")
-        remoteKey = dao.remoteKeyByQuery("page")
+        dao.deleteAll()
+        remoteKey = dao.remoteKeyByQuery(remoteKeysEntity[0].label)
         Assert.assertNull(remoteKey)
     }
 }
