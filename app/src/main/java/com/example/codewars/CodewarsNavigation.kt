@@ -24,7 +24,7 @@ fun CodewarsNavApp() {
             CodewarsMainScreen(
                 viewModel = viewModel,
                 navigateToChallenge = {
-                    navController.navigate(Screen.ChallengeScreen.withArgs(it))
+                    navController.navigate(Screen.ChallengeScreen.route + "/$it")
                 }
             )
         }
@@ -54,13 +54,4 @@ fun CodewarsNavApp() {
 internal sealed class Screen(val route: String) {
     object MainScreen : Screen("main_screen")
     object ChallengeScreen : Screen("challenge_screen")
-
-    fun withArgs(vararg args: String?): String {
-        return buildString {
-            append(route)
-            args.forEach { arg ->
-                append("/$arg")
-            }
-        }
-    }
 }
