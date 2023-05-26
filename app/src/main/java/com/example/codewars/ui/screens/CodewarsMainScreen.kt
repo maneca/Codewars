@@ -39,10 +39,8 @@ import com.example.codewars.ui.components.CustomTopAppBar
 import com.example.codewars.ui.components.ErrorView
 import com.example.codewars.ui.components.LoadingItem
 import com.example.codewars.ui.components.LoadingView
+import com.example.codewars.utils.toCorrectFormat
 import kotlinx.coroutines.flow.flowOf
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @Composable
 fun CodewarsMainScreen(
@@ -143,12 +141,6 @@ fun CompletableChallengesLayout(
             }
         }
     }
-}
-
-private fun String.toCorrectFormat(): String{
-    val dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-    val date1 = LocalDateTime.parse(this, dtf)
-    return date1.format(DateTimeFormatter.ofPattern("dd-MM-yyyy 'at' HH:mm"))
 }
 
 @Composable

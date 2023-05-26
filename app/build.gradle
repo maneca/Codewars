@@ -123,6 +123,11 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
     testImplementation 'app.cash.turbine:turbine:0.7.0'
 
+    // UI Tests
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
+    androidTestImplementation"androidx.compose.ui:ui-test:1.4.3"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:1.4.3"
+
     // Instrumentation unit tests (that will require a real device or emulator)
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
 
