@@ -15,14 +15,13 @@ import androidx.compose.material.icons.filled.PersonPin
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -37,8 +36,10 @@ import com.example.codewars.domain.model.ChallengeDetails
 import com.example.codewars.presentation.ChallengeDetailsViewModel
 import com.example.codewars.presentation.states.UiEvent
 import com.example.codewars.ui.components.CustomTopAppBar
+import com.example.codewars.ui.components.ErrorView
 import com.example.codewars.ui.components.IconText
 import com.example.codewars.ui.components.LanguagesFlow
+import com.example.codewars.ui.components.LoadingItem
 import com.example.codewars.ui.components.SectionHeader
 import kotlinx.coroutines.flow.collectLatest
 
@@ -49,61 +50,57 @@ fun ChallengeDetailsScreen(
 ) {
 
     val state = viewModel.state.collectAsStateWithLifecycle()
-    val isLoading = remember { mutableStateOf(true) }
-    val snackbarHostState = remember { SnackbarHostState() }
+    var isLoading by remember { mutableStateOf(false) }
+    var hasError by remember { mutableStateOf("") }
     val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is UiEvent.Loading -> {
-                    isLoading.value = true
+                    isLoading = true
                 }
 
                 is UiEvent.DetailsLoaded -> {
-                    isLoading.value = false
+                    isLoading = false
                 }
 
                 is UiEvent.Failed -> {
-                    isLoading.value = false
-                    snackbarHostState.showSnackbar(
-                        message = context.getString(R.string.something_went_wrong),
-                        duration = SnackbarDuration.Short
-                    )
+                    isLoading = false
+                    hasError = context.getString(R.string.something_went_wrong)
                 }
 
                 is UiEvent.NoInternetConnection -> {
-                    isLoading.value = false
-                    snackbarHostState.showSnackbar(
-                        message = context.getString(R.string.no_internet),
-                        duration = SnackbarDuration.Short
-                    )
+                    isLoading = false
+                    hasError = context.getString(R.string.no_internet)
                 }
             }
         }
     }
     ChallengeContents(
-        snackbarHostState = snackbarHostState,
         returnToMainScreen = returnToMainScreen,
-        challengeDetails = state.value.challengeDetails)
+        challengeDetails = state.value.challengeDetails,
+        isLoading = isLoading,
+        hasError = hasError
+    )
 
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChallengeContents(
-    snackbarHostState: SnackbarHostState,
     returnToMainScreen: () -> Unit,
-    challengeDetails: ChallengeDetails?
-){
+    challengeDetails: ChallengeDetails?,
+    isLoading: Boolean,
+    hasError: String
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CustomTopAppBar(canGoBack = true) {
                 returnToMainScreen()
             }
-        },
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+        }
     ) {
         Column(
             modifier = Modifier
@@ -130,8 +127,11 @@ fun ChallengeContents(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconText(icon = Icons.Default.StarBorder, value = "${challenge.totalStars}")
-                    IconText(icon = Icons.Default.EmojiEvents, value = "${challenge.totalCompleted}")
-                    challenge.userNameCreator?.let {username ->
+                    IconText(
+                        icon = Icons.Default.EmojiEvents,
+                        value = "${challenge.totalCompleted}"
+                    )
+                    challenge.userNameCreator?.let { username ->
                         IconText(icon = Icons.Default.PersonPin, value = username)
                     }
                 }
@@ -149,6 +149,16 @@ fun ChallengeContents(
                 LanguagesFlow(languages = challenge.languages)
             }
         }
+        if (isLoading) {
+            LoadingItem()
+        }
+        if (hasError.isNotEmpty()) {
+            ErrorView(
+                message = hasError,
+                buttonTitle = stringResource(id = R.string.go_back),
+                modifier = Modifier.fillMaxSize()
+            ) { returnToMainScreen() }
+        }
     }
 
 }
@@ -157,7 +167,6 @@ fun ChallengeContents(
 @Composable
 fun ChallengeDetailsPreview() {
     ChallengeContents(
-        snackbarHostState = SnackbarHostState(),
         returnToMainScreen = {},
         challengeDetails = ChallengeDetails(
             name = "Valid Braces",
@@ -179,5 +188,8 @@ fun ChallengeDetailsPreview() {
             totalCompleted = 100,
             totalStars = 40,
             userNameCreator = "xDranik"
-        ))
+        ),
+        isLoading = false,
+        hasError = ""
+    )
 }

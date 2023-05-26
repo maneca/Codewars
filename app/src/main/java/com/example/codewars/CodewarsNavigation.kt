@@ -1,7 +1,6 @@
 package com.example.codewars
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -18,14 +17,12 @@ import com.example.codewars.utils.ARGUMENT_KEY
 @Composable
 fun CodewarsNavApp() {
     val navController = rememberNavController()
-    val rememberScrollState = rememberLazyListState()
     NavHost(navController, startDestination = Screen.MainScreen.route) {
         composable(Screen.MainScreen.route){
             BackHandler(true) {}
             val viewModel = hiltViewModel<CodewarsMainViewModel>()
             CodewarsMainScreen(
                 viewModel = viewModel,
-                scrollState = rememberScrollState,
                 navigateToChallenge = {
                     navController.navigate(Screen.ChallengeScreen.withArgs(it))
                 }
@@ -38,7 +35,7 @@ fun CodewarsNavApp() {
                     type = NavType.StringType
                 }
             )
-        ) { entry ->
+        ) {
             BackHandler(true) {}
             val viewModel = hiltViewModel<ChallengeDetailsViewModel>()
             ChallengeDetailsScreen(

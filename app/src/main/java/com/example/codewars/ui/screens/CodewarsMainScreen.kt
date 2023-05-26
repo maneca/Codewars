@@ -45,7 +45,6 @@ import kotlinx.coroutines.flow.flowOf
 @Composable
 fun CodewarsMainScreen(
     viewModel: CodewarsMainViewModel,
-    scrollState: LazyListState,
     navigateToChallenge: (String) -> Unit
 ) {
     val completedChallenges = viewModel.completedChallenges.collectAsLazyPagingItems()
@@ -53,7 +52,7 @@ fun CodewarsMainScreen(
     MainContent(
         completedChallenges = completedChallenges,
         navigateToChallenge = navigateToChallenge,
-        scrollState = scrollState
+        scrollState = rememberLazyListState()
     )
 }
 

@@ -1,7 +1,5 @@
 package com.example.codewars.ui
 
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -31,9 +29,10 @@ class ChallengeDetailsUiTests {
 
         composeTestRule.setContent {
             ChallengeContents(
-                snackbarHostState = remember { SnackbarHostState() },
                 returnToMainScreen = {},
-                challengeDetails = challengeDetails
+                challengeDetails = challengeDetails,
+                isLoading = false,
+                hasError = ""
             )
         }
 
