@@ -26,20 +26,20 @@ class CodewarsRemoteMediator(
             LoadType.REFRESH -> {
                 val remoteKeys = state.anchorPosition?.let { position ->
                     state.closestItemToPosition(position)?.id?.let { repoId ->
-                        database.remoteKeyDao().remoteKeyByQuery(repoId)
+                        database.remoteKeyDao.remoteKeyByQuery(repoId)
                     }
                 }
                 remoteKeys?.nextKey?.dec() ?: 0
             }
             LoadType.PREPEND -> {
                 val remoteKeys = state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
-                    ?.let { repo -> database.remoteKeyDao().remoteKeyByQuery(repo.id) }
+                    ?.let { repo -> database.remoteKeyDao.remoteKeyByQuery(repo.id) }
                 val prevKey = remoteKeys?.prevKey ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
                 prevKey
             }
             LoadType.APPEND -> {
                 val remoteKeys = state.pages.lastOrNull() { it.data.isNotEmpty() }?.data?.lastOrNull()
-                    ?.let { repo -> database.remoteKeyDao().remoteKeyByQuery(repo.id) }
+                    ?.let { repo -> database.remoteKeyDao.remoteKeyByQuery(repo.id) }
                 val nextKey = remoteKeys?.nextKey
                     ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
                 nextKey
@@ -49,27 +49,27 @@ class CodewarsRemoteMediator(
         try
         {
             val response = api.getCompletedChallenges(DEFAULT_USER, page)
-            val isEndOfList = response.body()?.data?.isEmpty() ?: true
+            val reachedEndOfList = response.body()?.data?.isEmpty() ?: true
 
             database.withTransaction {
                 val challenges = response.body()?.data ?: emptyList()
 
                 if(loadType == LoadType.REFRESH){
-                    database.remoteKeyDao().deleteAll()
-                    database.codewarsDao().deleteCompletedChallenges()
+                    database.remoteKeyDao.deleteAll()
+                    database.codewarsDao.deleteCompletedChallenges()
                 }
 
                 val prevKey = if (page == 0) null else page.dec()
-                val nextKey = if (isEndOfList) null else page.inc()
+                val nextKey = if (reachedEndOfList) null else page.inc()
                 val keys = challenges.map {
                     RemoteKeyEntity(label = it.id, prevKey = prevKey, nextKey = nextKey)
                 }
 
-                database.remoteKeyDao().insertOrReplace(keys)
-                database.codewarsDao().insertAllCompletedChallenges(challenges.map { dto -> dto.toCompletedChallengeEntity() })
+                database.remoteKeyDao.insertOrReplace(keys)
+                database.codewarsDao.insertAllCompletedChallenges(challenges.map { dto -> dto.toCompletedChallengeEntity() })
             }
 
-            return MediatorResult.Success(endOfPaginationReached = isEndOfList)
+            return MediatorResult.Success(endOfPaginationReached = reachedEndOfList)
         } catch (exception: IOException) {
             return MediatorResult.Error(exception)
         } catch (exception: HttpException) {

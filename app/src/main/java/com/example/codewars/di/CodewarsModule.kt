@@ -26,16 +26,6 @@ class CodewarsModule {
     fun provideDatabase(application: Application)
             = CodewarsDatabase.invoke(application)
 
-    @Singleton
-    @Provides
-    fun provideCodewarsDao(database: CodewarsDatabase)
-            = database.codewarsDao()
-
-    @Singleton
-    @Provides
-    fun provideRemoteKeyDao(database: CodewarsDatabase)
-            = database.remoteKeyDao()
-
     @Provides
     @Singleton
     fun provideChallengesApi(): CodewarsApi {

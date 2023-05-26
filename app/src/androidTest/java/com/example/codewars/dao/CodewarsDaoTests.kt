@@ -65,7 +65,7 @@ class CodewarsDaoTests {
             CodewarsDatabase::class.java)
             .build()
 
-        dao = database.codewarsDao()
+        dao = database.codewarsDao
     }
 
     @After

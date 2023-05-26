@@ -19,8 +19,8 @@ import com.example.codewars.utils.DATABASE_NAME
 @TypeConverters(ListConverter::class)
 abstract class CodewarsDatabase : RoomDatabase(){
 
-    abstract fun codewarsDao(): CodewarsDao
-    abstract fun remoteKeyDao(): RemoteKeyDao
+    abstract val codewarsDao: CodewarsDao
+    abstract val remoteKeyDao: RemoteKeyDao
 
     companion object {
         @Volatile private var instance: CodewarsDatabase? = null

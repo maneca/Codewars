@@ -17,7 +17,6 @@ import com.example.codewars.utils.DEFAULT_USER
 import com.google.common.truth.Truth
 import io.mockk.coEvery
 import io.mockk.mockk
-
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -67,24 +66,24 @@ class CodewarsRemoteMediatorTests {
         )
     )
 
-    private lateinit var mockDb : CodewarsDatabase
+    private lateinit var database : CodewarsDatabase
     private val mockApi = mockk<CodewarsApi>()
 
     @Before
     fun setup() {
-        mockDb = CodewarsDatabase.invoke(ApplicationProvider.getApplicationContext())
+        database = CodewarsDatabase.invoke(ApplicationProvider.getApplicationContext())
     }
 
     @After
     fun tearDown() {
-        mockDb.clearAllTables()
+        database.clearAllTables()
     }
 
 
     @Test
     fun refreshLoadReturnsSuccessResultWhenMoreDataIsPresent() = runBlocking {
         val mockResponse = Response.success(ApiResponse(totalPages = 1, totalItems = 5, data= mockCompletedChallengesDto))
-        val remoteMediator = CodewarsRemoteMediator(api= mockApi, database = mockDb)
+        val remoteMediator = CodewarsRemoteMediator(api= mockApi, database = database)
         coEvery { mockApi.getCompletedChallenges(DEFAULT_USER, 0) } coAnswers { mockResponse }
 
         val pagingState = PagingState<Int, CompletedChallengeEntity>(
@@ -102,7 +101,7 @@ class CodewarsRemoteMediatorTests {
     @Test
     fun refreshLoadSuccessAndEndOfPaginationWhenNoMoreData() = runBlocking {
         val mockResponse = Response.success(ApiResponse(totalPages = 1, totalItems = 0, data= listOf()))
-        val remoteMediator = CodewarsRemoteMediator(api= mockApi, database = mockDb)
+        val remoteMediator = CodewarsRemoteMediator(api= mockApi, database = database)
         coEvery { mockApi.getCompletedChallenges(DEFAULT_USER, 0) } coAnswers { mockResponse }
 
         val pagingState = PagingState<Int, CompletedChallengeEntity>(
@@ -119,7 +118,7 @@ class CodewarsRemoteMediatorTests {
     @Test
     fun refreshLoadReturnsErrorResultWhenErrorOccurs() = runBlocking {
         coEvery { mockApi.getCompletedChallenges(DEFAULT_USER, 0) } throws IOException()
-        val remoteMediator = CodewarsRemoteMediator(api= mockApi, database = mockDb)
+        val remoteMediator = CodewarsRemoteMediator(api= mockApi, database = database)
         val pagingState = PagingState<Int, CompletedChallengeEntity>(
             listOf(),
             null,

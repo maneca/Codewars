@@ -38,7 +38,7 @@ class RemoteKeyDaoTests {
             CodewarsDatabase::class.java)
             .build()
 
-        dao = database.remoteKeyDao()
+        dao = database.remoteKeyDao
     }
 
     @After
