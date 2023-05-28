@@ -36,6 +36,7 @@ android {
         jvmTarget = '17'
     }
     buildFeatures {
+        buildConfig true
         compose true
     }
     composeOptions {
@@ -51,6 +52,16 @@ android {
             jniLibs {
                 useLegacyPackaging = true
             }
+        }
+    }
+    buildTypes{
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            debuggable true
         }
     }
 }
@@ -76,10 +87,12 @@ dependencies {
     // RETROFIT
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
 
     // HILT
     implementation "com.google.dagger:hilt-android:2.46.1"
     kapt "com.google.dagger:hilt-compiler:2.46.1"
+    kapt 'com.google.dagger:hilt-android-compiler:2.46.1'
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
     // COROUTINES
@@ -102,9 +115,6 @@ dependencies {
     // PAGING
     implementation 'androidx.paging:paging-runtime-ktx:3.1.1'
     implementation 'androidx.paging:paging-compose:1.0.0-alpha19'
-
-    // mock websever for testing retrofit responses
-    testImplementation "com.squareup.okhttp3:mockwebserver:4.6.0"
 
     // GSON
     implementation 'com.google.code.gson:gson:2.9.0'
